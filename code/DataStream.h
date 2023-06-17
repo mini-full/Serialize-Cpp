@@ -67,6 +67,10 @@ namespace Binary{
             template <typename K, typename V>
             void write(const std::map<K, V>& value);
 
+            // varible argument template
+            template <typename T, typename... Args>
+            void write_args(const T& value, const Args&... args);
+            void write_args();
 
             void read(char* data, int len);
 
@@ -91,6 +95,10 @@ namespace Binary{
 
             template <typename K, typename V>
             void read(std::map<K, V>& value);
+
+            template <typename T, typename... Args>
+            void read_args(T& value, Args&... args);
+            void read_args();
 
 
             // << operator overloading
@@ -392,6 +400,13 @@ namespace Binary{
             }
         }
 
+        template <typename T, typename ...Args>
+        void DataStream::write_args(const T& value, const Args&... args){
+            write(value);
+            write(args...);
+        }
+        void DataStream::write_args(){}
+
         void DataStream::read(char* data, int len){
             std::memcpy(data, (char*)&buf[pos], len);
             pos += len;
@@ -531,6 +546,13 @@ namespace Binary{
         void DataStream::read(Serializable& value){
             value.deserialize(*this);
         }
+
+        template <typename T, typename ...Args>
+        void DataStream::read_args(T& value, Args&... args){
+            read(value);
+            read(args...);
+        }
+        void DataStream::read_args(){}
 
     }
 }
