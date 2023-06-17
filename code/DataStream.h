@@ -118,6 +118,29 @@ namespace Binary{
                 return *this;
             }
 
+            template <typename T>
+            DataStream& operator<<(const std::vector<T>& value){
+                write(value);
+                return *this;
+            }
+            template <typename T>
+            DataStream& operator<<(const std::set<T>& value){
+                write(value);
+                return *this;
+            }
+            template <typename T>
+            DataStream& operator<<(const std::list<T>& value){
+                write(value);
+                return *this;
+            }
+            template <typename K, typename V>
+            DataStream& operator<<(const std::map<K, V>& value){
+                write(value);
+                return *this;
+            }
+
+
+
             // >> operator overloading
             DataStream& operator>>(bool& value){
                 read(value);
@@ -144,6 +167,27 @@ namespace Binary{
                 return *this;
             }
             DataStream& operator>>(std::string& value){
+                read(value);
+                return *this;
+            }
+
+            template <typename T>
+            DataStream& operator>>(std::vector<T>& value){
+                read(value);
+                return *this;
+            }
+            template <typename T>
+            DataStream& operator>>(std::set<T>& value){
+                read(value);
+                return *this;
+            }
+            template <typename T>
+            DataStream& operator>>(std::list<T>& value){
+                read(value);
+                return *this;
+            }
+            template <typename K, typename V>
+            DataStream& operator>>(std::map<K, V>& value){
                 read(value);
                 return *this;
             }

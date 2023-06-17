@@ -9,11 +9,11 @@ int main(){
     map<int,double> v;
     v[12]=123;
     v[23] = 234.5;
-    ds.write(v);
+    ds << v;
 
     map<int,double> v2;
-    ds.read(v2);
-
+    ds >> v2;
+    
     //traverse v2
     for(map<int,double>::iterator it = v2.begin(); it != v2.end(); ++it){
         cout << it->first << ": " << it->second << endl;
