@@ -50,7 +50,7 @@ void test_xml_vector_int(){
 void test_xml_vector_double(){
     cout << "test for xml vector<double> " << endl;
     XML::xmlSerialBase baseVector;
-    vector<double> v0 = {1.2, 2.4, 3.6};
+    vector<double> v0 = {3.14, 2.4, 3.6};
     vector<double> v1;
     baseVector.serialize_xml(v0, "./file/vector2.xml");
     baseVector.deserialize_xml(v1, "./file/vector2.xml");
@@ -143,7 +143,7 @@ void test_xml_list_string(){
 void test_xml_pair_int_double(){
     cout << "test for xml pair<int, double>" << endl;
     XML::xmlSerialBase basePair;
-    pair<int, double> p0 = {1, 1.2};
+    pair<int, double> p0 = {1, 3.14};
     pair<int, double> p1;
     basePair.serialize_xml(p0, "./file/pair1.xml");
     basePair.deserialize_xml(p1, "./file/pair1.xml");
@@ -182,7 +182,7 @@ void test_xml_map_int2double(){
     cout << "test for xml map<int double>" << endl;
     XML::xmlSerialBase baseMap;
     map<int, double> m0{
-        {1, 1.2},
+        {1, 3.14},
         {2, 2.4},
         {3, 3.6}
     };
@@ -229,7 +229,7 @@ void test_xml_map_str2str(){
 
 void test_xml_userType(){
     XML::xmlSerialBase baseUsrType;
-    Foo u1 = {1, "Foo", {1.2, 2.4, 3.6}};
+    Foo u1 = {1, "Foo", {31.4, 2.4, 3.6}};
     Foo u2;
     baseUsrType.custom_serialize_xml("./file/usr.xml", u1.num, u1.name, u1.vec);
 }

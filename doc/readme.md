@@ -101,6 +101,14 @@ SERIALIZE(name, age, weight, a)
 
 ### Test
 
+To compile the program, run in `code/bin`
+
+```make
+make
+```
+
+Note that the test is completed in Ubuntu (WSL), it may fail to compile in Windows, due to the incompatibility of type `__int32_t`, change it to `__int32` and same for `__int64_t` may make it able to compile in Windows.
+
 Run the test `test_bin.cpp`, it should print out:
 
 ```Name: John
@@ -135,3 +143,30 @@ int main(){
 ```
 
 By default, the program runs in little endian way.
+
+## XML Serialization
+
+To compile the program, run in `code/xml`
+
+```make
+make
+```
+
+The `.xml` files will be saved in `xml/file`
+
+Below is one of the file:
+
+```xml
+<?xml version "1.0" encoding = "UTF-8"?>
+<serialization>
+    <std_int value="1"/>
+    <std_string value="Foo"/>
+    <std_vector size="3">
+        <std_double value="1.200000"/>
+        <std_double value="2.400000"/>
+        <std_double value="3.600000"/>
+    </std_vector>
+</serialization>
+```
+
+It even does not need the user to define functions to serialize his/her class.
