@@ -2,7 +2,7 @@
 #include "DataStream.h"
 
 using namespace std;
-using namespace foo::serialize;
+using namespace Binary::serialize;
 
 int main(){
     DataStream ds;
@@ -10,12 +10,15 @@ int main(){
     ds << i;
     ds << 23.23;
     ds << "Hello World";
+    ds << true;
     ds.print_from_bin();
     __int64 o;
     double d;
     string s;
-    ds >> o >> d >> s;
+    bool b;
+    ds >> o >> d >> s >> b;
     cout << o << endl;
     cout << d << endl;
     cout << s << endl;
+    cout << b << endl;
 }

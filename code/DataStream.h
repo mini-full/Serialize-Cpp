@@ -6,7 +6,7 @@
 /* DEBUG */
 #include <iostream>
 
-namespace foo{
+namespace Binary{
     namespace serialize{
 
         class DataStream{
@@ -133,45 +133,45 @@ namespace foo{
             int  i = 0;
             while (i < size){
                 switch ((DataType)buf[i]){
-                    case DT_CHAR:
-                        printf("DT_CHAR: %c\n", buf[i + 1]);
-                        i += 2;
-                        break;
-                    case DT_INT32:
-                        printf("DT_INT32: %d\n", *(int*)&buf[i + 1]);
-                        i += 5;
-                        break;
-                    case DT_INT64:
-                        printf("DT_INT64: %lld\n", *(long long*)&buf[i + 1]);
-                        i += 9;
-                        break;
-                    case DT_FLOAT:
-                        printf("DT_FLOAT: %f\n", *(float*)&buf[i + 1]);
-                        i += 5;
-                        break;
-                    case DT_DOUBLE:
-                        printf("DT_DOUBLE: %lf\n", *(double*)&buf[i + 1]);
-                        i += 9;
-                        break;
-                    case DT_STRING:
-                        int len;
-                        if ((DataType)buf[++i] != DataType::DT_INT32){
-                            throw std::logic_error("Erorr: DT_STRING should be followed by DT_INT32");
-                        }
-                        memcpy(&len, &buf[++i], sizeof(int));
-                        i += 4;
-                        std::cout << "DT_STRING: " << std::string(&buf[i], len) << std::endl;
-                        i += len;
-                        break;
-                    case DT_BOOL:
-                        printf("DT_BOOL: %d\n", *(bool*)&buf[i + 1]);
-                        // printf((int)buf[i + 1] ? "true\n" : "false\n");
-                        i += 2;
-                        break;
-                    default:
-                        printf("Unknown type: %d\n", buf[i]);
-                        i += 1;
-                        break;
+                case DT_CHAR:
+                    printf("DT_CHAR: %c\n", buf[i + 1]);
+                    i += 2;
+                    break;
+                case DT_INT32:
+                    printf("DT_INT32: %d\n", *(int*)&buf[i + 1]);
+                    i += 5;
+                    break;
+                case DT_INT64:
+                    printf("DT_INT64: %lld\n", *(long long*)&buf[i + 1]);
+                    i += 9;
+                    break;
+                case DT_FLOAT:
+                    printf("DT_FLOAT: %f\n", *(float*)&buf[i + 1]);
+                    i += 5;
+                    break;
+                case DT_DOUBLE:
+                    printf("DT_DOUBLE: %lf\n", *(double*)&buf[i + 1]);
+                    i += 9;
+                    break;
+                case DT_STRING:
+                    int len;
+                    if ((DataType)buf[++i] != DataType::DT_INT32){
+                        throw std::logic_error("Erorr: DT_STRING should be followed by DT_INT32");
+                    }
+                    memcpy(&len, &buf[++i], sizeof(int));
+                    i += 4;
+                    std::cout << "DT_STRING: " << std::string(&buf[i], len) << std::endl;
+                    i += len;
+                    break;
+                case DT_BOOL:
+                    printf("DT_BOOL: %d\n", *(bool*)&buf[i + 1]);
+                    // printf((int)buf[i + 1] ? "true\n" : "false\n");
+                    i += 2;
+                    break;
+                default:
+                    printf("Unknown type: %d\n", buf[i]);
+                    i += 1;
+                    break;
                 }
             }
         }
