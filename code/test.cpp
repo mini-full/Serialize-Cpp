@@ -4,16 +4,24 @@
 using namespace std;
 using namespace Binary::serialize;
 
+class A : public Serializable{
+    public:
+    int a;
+    A(){a = 0;}
+    SERIALIZE(a)
+};
+
 class Foo : public Serializable{
     private:
     string name;
     int age;
     double weight;
+    A a;
     public:
     Foo(){}
-    Foo(const string& name, int age, double weight) : name(name),age(age), weight(weight){}
+    Foo(const string& name, int age, double weight, A a) : name(name),age(age), weight(weight), a(a){}
     ~Foo(){}
-    SERIALIZE(name, age, weight)
+    SERIALIZE(name, age, weight, a)
     // void serialize(DataStream& ds) const override{
     //     char type = DataStream::DataType::DT_CUSTOM;
     //     ds.write((char*)&type, sizeof(char));
@@ -34,12 +42,13 @@ class Foo : public Serializable{
         cout << "Name: " << name << endl;
         cout << "Age: " << age << endl;
         cout << "Weight: " << weight << endl;
+        cout << "A: " << a.a << endl;
     }
 };
 
 int main(){
     DataStream ds;
-    Foo foo("John", 25, 50.5);
+    Foo foo("John", 25, 50.5, A());
     foo.serialize(ds);
     Foo foo2;
     foo2.deserialize(ds);
