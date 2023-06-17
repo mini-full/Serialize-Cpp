@@ -1,3 +1,6 @@
+#ifndef __DATASTREAM_H__
+#define __DATASTREAM_H__
+
 #pragma once
 #include <vector>
 #include <map>
@@ -5,6 +8,7 @@
 #include <list>
 #include <string>
 #include <cstring>
+#include "Serializable.h"
 
 /* DEBUG */
 #include <iostream>
@@ -49,6 +53,7 @@ namespace Binary{
             void write(double value);
             void write(const char* value);
             void write(const std::string& value);
+            void write(const Serializable& value);
 
             template <typename T>
             void write(const std::vector<T>& value);
@@ -62,6 +67,19 @@ namespace Binary{
             template <typename K, typename V>
             void write(const std::map<K, V>& value);
 
+
+            void read(char* data, int len);
+
+            // Read functions
+            void read(bool& value);
+            void read(char& value);
+            void read(__int32& value);
+            void read(__int64& value);
+            void read(float& value);
+            void read(double& value);
+            void read(std::string& value);
+            void read(Serializable& value);
+
             template <typename T>
             void read(std::vector<T>& value);
 
@@ -73,15 +91,6 @@ namespace Binary{
 
             template <typename K, typename V>
             void read(std::map<K, V>& value);
-
-            // Read functions
-            void read(bool& value);
-            void read(char& value);
-            void read(__int32& value);
-            void read(__int64& value);
-            void read(float& value);
-            void read(double& value);
-            void read(std::string& value);
 
 
             // << operator overloading
@@ -139,6 +148,10 @@ namespace Binary{
                 return *this;
             }
 
+            DataStream& operator<<(const Serializable& value){
+                write(value);
+                return *this;
+            }
 
 
             // >> operator overloading
@@ -188,6 +201,11 @@ namespace Binary{
             }
             template <typename K, typename V>
             DataStream& operator>>(std::map<K, V>& value){
+                read(value);
+                return *this;
+            }
+
+            DataStream& operator>>(Serializable& value){
                 read(value);
                 return *this;
             }
@@ -325,6 +343,10 @@ namespace Binary{
             write(value.c_str(), len);
         }
 
+        void DataStream::write(const Serializable& value){
+            value.serialize(*this);
+        }
+
         template <typename T>
         void DataStream::write(const std::vector<T>& value){
             char type = DataType::DT_VECTOR;
@@ -370,6 +392,10 @@ namespace Binary{
             }
         }
 
+        void DataStream::read(char* data, int len){
+            std::memcpy(data, (char*)&buf[pos], len);
+            pos += len;
+        }
 
         template <typename T>
         void DataStream::read(std::set<T>& value){
@@ -502,6 +528,11 @@ namespace Binary{
             pos += len;
         }
 
+        void DataStream::read(Serializable& value){
+            value.deserialize(*this);
+        }
 
     }
 }
+
+#endif

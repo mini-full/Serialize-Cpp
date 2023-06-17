@@ -1,22 +1,45 @@
 #include <iostream>
 #include "DataStream.h"
-
+#include "Serializable.h"
 using namespace std;
 using namespace Binary::serialize;
 
-int main(){
-    DataStream ds;
-    map<int,double> v;
-    v[12]=123;
-    v[23] = 234.5;
-    ds << v;
+class Foo : public Serializable{
+    private:
+    string name;
+    int age;
+    public:
+    Foo(){}
+    Foo(const string& name, int age) : name(name),age(age){}
+    ~Foo(){}
 
-    map<int,double> v2;
-    ds >> v2;
-    
-    //traverse v2
-    for(map<int,double>::iterator it = v2.begin(); it != v2.end(); ++it){
-        cout << it->first << ": " << it->second << endl;
+    void serialize(DataStream& ds) const override{
+        char type = DataStream::DataType::DT_CUSTOM;
+        ds.write((char*)&type, sizeof(char));
+        ds.write(name);
+        ds.write(age);
+    }
+    void deserialize(DataStream& ds) override{
+        char type;
+        ds.read((char*)&type, sizeof(char));
+        if(type != DataStream::DataType::DT_CUSTOM){
+            throw runtime_error("Reading invalid data type");
+        }
+        ds.read(name);
+        ds.read(age);
     }
 
-} 
+    void show_Foo() const{
+        cout << "Name: " << name << endl;
+        cout << "Age: " << age << endl;
+    }
+};
+
+int main(){
+    DataStream ds;
+    Foo foo("John", 25);
+    foo.serialize(ds);
+    Foo foo2;
+    foo2.deserialize(ds);
+    foo2.show_Foo();
+}
