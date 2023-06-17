@@ -8,6 +8,7 @@
 #include <list>
 #include <string>
 #include <cstring>
+#include <algorithm>
 #include "Serializable.h"
 
 /* DEBUG */
@@ -33,7 +34,15 @@ namespace Binary{
                 DT_NULL,
                 DT_CUSTOM
             };
-            DataStream(){};
+
+            enum ByteOrder{
+                BO_LITTLE_ENDIAN,
+                BO_BIG_ENDIAN
+            };
+
+            DataStream(){
+                byte_order = byte_order_detect();
+            };
             ~DataStream(){};
 
             /**
@@ -222,7 +231,20 @@ namespace Binary{
             std::vector<char> buf;
             int pos = 0;
             void reserve(int len);
+            ByteOrder byte_order;
+            ByteOrder byte_order_detect();
         };
+
+        DataStream::ByteOrder DataStream::byte_order_detect(){
+            int num = 0x12345678;
+            char* p = (char*)&num;
+            if (*p == 0x12){
+                return DataStream::ByteOrder::BO_BIG_ENDIAN;
+            }
+            else{
+                return DataStream::ByteOrder::BO_LITTLE_ENDIAN;
+            }
+        }
 
         void DataStream::print_from_bin() const{
             int size = buf.size();
@@ -314,24 +336,48 @@ namespace Binary{
         void DataStream::write(__int32 value){
             char type = DataType::DT_INT32;
             write((char*)&type, sizeof(char));
+            if (byte_order == ByteOrder::BO_BIG_ENDIAN){
+                // value = _byteswap_ulong(value);
+                char* first = (char*)&value;
+                char* last = first + sizeof(__int32);
+                std::reverse(first, last);
+            }
             write((char*)&value, sizeof(__int32));
         }
 
         void DataStream::write(__int64 value){
             char type = DataType::DT_INT64;
             write((char*)&type, sizeof(char));
+            if (byte_order == ByteOrder::BO_BIG_ENDIAN){
+                // value = _byteswap_uint64(value);
+                char* first = (char*)&value;
+                char* last = first + sizeof(__int64);
+                std::reverse(first, last);
+            }
             write((char*)&value, sizeof(__int64));
         }
 
         void DataStream::write(float value){
             char type = DataType::DT_FLOAT;
             write((char*)&type, sizeof(char));
+            if (byte_order == ByteOrder::BO_BIG_ENDIAN){
+                // value = _byteswap_ulong(value);
+                char* first = (char*)&value;
+                char* last = first + sizeof(float);
+                std::reverse(first, last);
+            }
             write((char*)&value, sizeof(float));
         }
 
         void DataStream::write(double value){
             char type = DataType::DT_DOUBLE;
             write((char*)&type, sizeof(char));
+            if (byte_order == ByteOrder::BO_BIG_ENDIAN){
+                // value = _byteswap_uint64(value);
+                char* first = (char*)&value;
+                char* last = first + sizeof(double);
+                std::reverse(first, last);
+            }
             write((char*)&value, sizeof(double));
         }
 
@@ -502,6 +548,12 @@ namespace Binary{
                 throw std::logic_error("Error: attempt to read int32 a type other than int32");
             }
             value = *(int*)&buf[pos + 1];
+            if (byte_order == ByteOrder::BO_BIG_ENDIAN){
+                // value = ntohl(value);
+                char* first = (char*)&value;
+                char* last = first + sizeof(__int32);
+                std::reverse(first, last);
+            }
             pos += 5;
         }
 
@@ -510,6 +562,12 @@ namespace Binary{
                 throw std::logic_error("Error: attempt to read int64 a type other than int64");
             }
             value = *(long long*)&buf[pos + 1];
+            if (byte_order == ByteOrder::BO_BIG_ENDIAN){
+                // value = ntohll(value);
+                char* first = (char*)&value;
+                char* last = first + sizeof(__int64);
+                std::reverse(first, last);
+            }
             pos += 9;
         }
 
@@ -518,6 +576,12 @@ namespace Binary{
                 throw std::logic_error("Error: attempt to read float a type other than float");
             }
             value = *(float*)&buf[pos + 1];
+            if (byte_order == ByteOrder::BO_BIG_ENDIAN){
+                // value = ntohf(value);
+                char* first = (char*)&value;
+                char* last = first + sizeof(float);
+                std::reverse(first, last);
+            }
             pos += 5;
         }
 
@@ -526,6 +590,12 @@ namespace Binary{
                 throw std::logic_error("Error: attempt to read double a type other than double");
             }
             value = *(double*)&buf[pos + 1];
+            if (byte_order == ByteOrder::BO_BIG_ENDIAN){
+                // value = ntohd(value);
+                char* first = (char*)&value;
+                char* last = first + sizeof(double);
+                std::reverse(first, last);
+            }
             pos += 9;
         }
 
