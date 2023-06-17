@@ -8,7 +8,7 @@ int main(){
     DataStream ds;
     string s = "Hello";
     // ds.write("Hello World!");
-    ds.write(s);
+    ds << s;
     // ds.write(133);
     ds.print_from_bin();
 } 

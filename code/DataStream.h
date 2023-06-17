@@ -48,6 +48,40 @@ namespace foo{
             void write(const char* value);
             void write(const std::string& value);
 
+            // << operator overloading
+            DataStream& operator<<(bool value){
+                write(value);
+                return *this;
+            }
+            DataStream& operator<<(char value){
+                write(value);
+                return *this;
+            }
+            DataStream& operator<<(__int32 value){
+                write(value);
+                return *this;
+            }
+            DataStream& operator<<(__int64 value){
+                write(value);
+                return *this;
+            }
+            DataStream& operator<<(float value){
+                write(value);
+                return *this;
+            }
+            DataStream& operator<<(double value){
+                write(value);
+                return *this;
+            }
+            DataStream& operator<<(const char* value){
+                write(value);
+                return *this;
+            }
+            DataStream& operator<<(const std::string& value){
+                write(value);
+                return *this;
+            }
+
             private:
             std::vector<char> buf;
             void reserve(int len);

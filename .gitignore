@@ -1,0 +1,20 @@
+# .gitignore for C++ projects
+
+# Ignore all build directories
+build/
+# Ignore all object files
+*.o
+# Ignore all executables
+*.exe
+# Ignore all shared libraries
+*.so
+# Ignore all static libraries
+*.a
+# Ignore all files in the bin directory
+bin/*
+# Ignore all files in the lib directory
+lib/*
+# Ignore all files in the obj directory
+obj/*
+
+*.pdf
