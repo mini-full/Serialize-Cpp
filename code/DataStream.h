@@ -403,7 +403,7 @@ namespace Binary{
         template <typename T, typename ...Args>
         void DataStream::write_args(const T& value, const Args&... args){
             write(value);
-            write(args...);
+            write_args(args...);
         }
         void DataStream::write_args(){}
 
@@ -550,7 +550,7 @@ namespace Binary{
         template <typename T, typename ...Args>
         void DataStream::read_args(T& value, Args&... args){
             read(value);
-            read(args...);
+            read_args(args...);
         }
         void DataStream::read_args(){}
 
