@@ -47,10 +47,22 @@ class Foo : public Serializable{
 };
 
 int main(){
+    // Test for nested user-defined type
     DataStream ds;
     Foo foo("John", 25, 50.5, A());
     foo.serialize(ds);
     Foo foo2;
     foo2.deserialize(ds);
     foo2.show_Foo();
+
+    // Test for primitive types
+    DataStream ds2;
+    ds << 1 << 2.0 << "Hello" << true << '!';
+    int a;
+    double b;
+    string c;
+    bool d;
+    char e;
+    ds >> a >> b >> c >> d >> e;
+    cout << a << " " << b << " " << c << " " << d << " " << e << endl;
 }

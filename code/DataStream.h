@@ -1,6 +1,3 @@
-#ifndef __DATASTREAM_H__
-#define __DATASTREAM_H__
-
 #pragma once
 #include <vector>
 #include <map>
@@ -626,5 +623,3 @@ namespace Binary{
 
     }
 }
-
-#endif

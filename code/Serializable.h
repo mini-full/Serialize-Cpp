@@ -1,5 +1,3 @@
-#ifndef __SERIALIZABLE_H__
-#define __SERIALIZABLE_H__
 #pragma once
 
 #define SERIALIZE(...) \
@@ -29,4 +27,3 @@ namespace Binary{
         };
     }
 }
-#endif
