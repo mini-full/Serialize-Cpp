@@ -3,6 +3,9 @@
 #include <string>
 #include <cstring>
 
+/* DEBUG */
+#include <iostream>
+
 namespace foo{
     namespace serialize{
 
@@ -26,7 +29,11 @@ namespace foo{
             DataStream(){};
             ~DataStream(){};
 
-            void print_bin() const;
+            /**
+             * @brief Print the data for debugging
+             *
+             */
+            void print_from_bin() const;
 
             void write(const char* data, int len);
             void read(char* data, int len);
@@ -46,13 +53,53 @@ namespace foo{
             void reserve(int len);
         };
 
-        void DataStream::print_bin() const{
+        void DataStream::print_from_bin() const{
             int size = buf.size();
             printf("size: %d\n", size);
-            // for (int i = 0; i < buf.size(); i++){
-            //     printf("%02x ", buf[i]);
-            // }
-            // printf("\n");
+            int  i = 0;
+            while (i < size){
+                switch ((DataType)buf[i]){
+                    case DT_CHAR:
+                        printf("DT_CHAR: %c\n", buf[i + 1]);
+                        i += 2;
+                        break;
+                    case DT_INT32:
+                        printf("DT_INT32: %d\n", *(int*)&buf[i + 1]);
+                        i += 5;
+                        break;
+                    case DT_INT64:
+                        printf("DT_INT64: %lld\n", *(long long*)&buf[i + 1]);
+                        i += 9;
+                        break;
+                    case DT_FLOAT:
+                        printf("DT_FLOAT: %f\n", *(float*)&buf[i + 1]);
+                        i += 5;
+                        break;
+                    case DT_DOUBLE:
+                        printf("DT_DOUBLE: %lf\n", *(double*)&buf[i + 1]);
+                        i += 9;
+                        break;
+                    case DT_STRING:
+                        int len;
+                        if ((DataType)buf[++i] != DataType::DT_INT32){
+                            throw std::logic_error("Erorr: DT_STRING should be followed by DT_INT32");
+                        }
+                        memcpy(&len, &buf[++i], sizeof(int));
+                        i += 4;
+                        std::cout << "DT_STRING: " << std::string(&buf[i], len) << std::endl;
+                        i += len;
+                        break;
+                    case DT_BOOL:
+                        printf("DT_BOOL: %d\n", *(bool*)&buf[i + 1]);
+                        // printf((int)buf[i + 1] ? "true\n" : "false\n");
+                        i += 2;
+                        break;
+                    default:
+                        printf("Unknown type: %d\n", buf[i]);
+                        i += 1;
+                        break;
+                }
+            }
         }
 
         void DataStream::reserve(int len){
@@ -81,7 +128,7 @@ namespace foo{
         }
 
         void DataStream::write(bool value){
-            
+
             char type = DataType::DT_BOOL;
             write((char*)&type, sizeof(char));
             write((char*)&value, sizeof(bool)); // TODO
@@ -121,7 +168,7 @@ namespace foo{
             char type = DataType::DT_STRING;
             write((char*)&type, sizeof(char));
             int len = strlen(value);
-            write((char*)&len, sizeof(int));
+            write(len);
             write(value, len);
         }
 
@@ -129,7 +176,7 @@ namespace foo{
             char type = DataType::DT_STRING;
             write((char*)&type, sizeof(char));
             int len = value.length();
-            write((char*)&len, sizeof(int));
+            write(len);
             write(value.c_str(), len);
         }
     }
