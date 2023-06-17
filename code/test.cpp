@@ -6,19 +6,17 @@ using namespace Binary::serialize;
 
 int main(){
     DataStream ds;
-    __int64 i = 32;
-    ds << i;
-    ds << 23.23;
-    ds << "Hello World";
-    ds << true;
-    ds.print_from_bin();
-    __int64 o;
-    double d;
-    string s;
-    bool b;
-    ds >> o >> d >> s >> b;
-    cout << o << endl;
-    cout << d << endl;
-    cout << s << endl;
-    cout << b << endl;
-}
+    map<int,double> v;
+    v[12]=123;
+    v[23] = 234.5;
+    ds.write(v);
+
+    map<int,double> v2;
+    ds.read(v2);
+
+    //traverse v2
+    for(map<int,double>::iterator it = v2.begin(); it != v2.end(); ++it){
+        cout << it->first << ": " << it->second << endl;
+    }
+
+} 

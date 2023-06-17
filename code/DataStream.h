@@ -1,5 +1,8 @@
 #pragma once
 #include <vector>
+#include <map>
+#include <set>
+#include <list>
 #include <string>
 #include <cstring>
 
@@ -46,6 +49,30 @@ namespace Binary{
             void write(double value);
             void write(const char* value);
             void write(const std::string& value);
+
+            template <typename T>
+            void write(const std::vector<T>& value);
+
+            template <typename T>
+            void write(const std::list<T>& value);
+
+            template <typename T>
+            void write(const std::set<T>& value);
+
+            template <typename K, typename V>
+            void write(const std::map<K, V>& value);
+
+            template <typename T>
+            void read(std::vector<T>& value);
+
+            template <typename T>
+            void read(std::list<T>& value);
+
+            template <typename T>
+            void read(std::set<T>& value);
+
+            template <typename K, typename V>
+            void read(std::map<K, V>& value);
 
             // Read functions
             void read(bool& value);
@@ -252,6 +279,121 @@ namespace Binary{
             int len = value.length();
             write(len);
             write(value.c_str(), len);
+        }
+
+        template <typename T>
+        void DataStream::write(const std::vector<T>& value){
+            char type = DataType::DT_VECTOR;
+            write((char*)&type, sizeof(char));
+            int len = value.size();
+            write(len);
+            for (int i = 0; i < len; i++){
+                write(value[i]);
+            }
+        }
+
+        template <typename T>
+        void DataStream::write(const std::list<T>& value){
+            char type = DataType::DT_LIST;
+            write((char*)&type, sizeof(char));
+            int len = value.size();
+            write(len);
+            for (auto it = value.begin(); it != value.end(); it++){
+                write(*it);
+            }
+        }
+
+        template <typename T>
+        void DataStream::write(const std::set<T>& value){
+            char type = DataType::DT_SET;
+            write((char*)&type, sizeof(char));
+            int len = value.size();
+            write(len);
+            for (auto it = value.begin(); it != value.end(); it++){
+                write(*it);
+            }
+        }
+
+        template <typename K, typename V>
+        void DataStream::write(const std::map<K, V>& value){
+            char type = DataType::DT_MAP;
+            write((char*)&type, sizeof(char));
+            int len = value.size();
+            write(len);
+            for (auto it = value.begin(); it != value.end(); it++){
+                write(it->first);
+                write(it->second);
+            }
+        }
+
+
+        template <typename T>
+        void DataStream::read(std::set<T>& value){
+            value.clear();
+            pos = 0;
+            if (buf[pos] != DataType::DT_SET){
+                throw std::logic_error("Error: attempt to read set a type other than set");
+            }
+            pos++;
+            int len;
+            read(len);
+            for (int i = 0; i < len; i++){
+                T t;
+                read(t);
+                value.insert(t);
+            }
+        }
+
+        template <typename T>
+        void DataStream::read(std::vector<T>& value){
+            value.clear();
+            pos = 0;
+            if (buf[pos] != DataType::DT_VECTOR){
+                throw std::logic_error("Error: attempt to read vector a type other than vector");
+            }
+            pos++;
+            int len;
+            read(len);
+            value.resize(len);
+            for (int i = 0; i < len; i++){
+                read(value[i]);
+            }
+        }
+
+        template <typename T>
+        void DataStream::read(std::list<T>& value){
+            value.clear();
+            pos = 0;
+            if (buf[pos] != DataType::DT_LIST){
+                throw std::logic_error("Error: attempt to read list a type other than list");
+            }
+            pos++;
+            int len;
+            read(len);
+            for (int i = 0; i < len; i++){
+                T tmp;
+                read(tmp);
+                value.push_back(tmp);
+            }
+        }
+
+        template <typename K, typename V>
+        void DataStream::read(std::map<K, V>& value){
+            value.clear();
+            pos = 0;
+            if (buf[pos] != DataType::DT_MAP){
+                throw std::logic_error("Error: attempt to read map a type other than map");
+            }
+            pos++;
+            int len;
+            read(len);
+            for (int i = 0; i < len; i++){
+                K k;
+                V v;
+                read(k);
+                read(v);
+                value[k] = v;
+            }
         }
 
         void DataStream::read(bool& value){
