@@ -14,10 +14,8 @@ int main(){
     __int64 o;
     double d;
     string s;
-    ds.read(o);
-    ds.read(d);
-    ds.read(s);
+    ds >> o >> d >> s;
     cout << o << endl;
     cout << d << endl;
     cout << s << endl;
-} 
+}

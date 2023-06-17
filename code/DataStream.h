@@ -91,6 +91,36 @@ namespace foo{
                 return *this;
             }
 
+            // >> operator overloading
+            DataStream& operator>>(bool& value){
+                read(value);
+                return *this;
+            }
+            DataStream& operator>>(char& value){
+                read(value);
+                return *this;
+            }
+            DataStream& operator>>(__int32& value){
+                read(value);
+                return *this;
+            }
+            DataStream& operator>>(__int64& value){
+                read(value);
+                return *this;
+            }
+            DataStream& operator>>(float& value){
+                read(value);
+                return *this;
+            }
+            DataStream& operator>>(double& value){
+                read(value);
+                return *this;
+            }
+            DataStream& operator>>(std::string& value){
+                read(value);
+                return *this;
+            }
+
             private:
             std::vector<char> buf;
             int pos = 0;
