@@ -6,9 +6,9 @@ using namespace foo::serialize;
 
 int main(){
     DataStream ds;
-    string s = "Hello";
-    // ds.write("Hello World!");
-    ds << s;
-    // ds.write(133);
-    ds.print_from_bin();
+    bool b = true;
+    ds << b;
+    bool c;
+    ds.read(c);
+    cout << c << endl;
 } 

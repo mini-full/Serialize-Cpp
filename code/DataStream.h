@@ -36,7 +36,6 @@ namespace foo{
             void print_from_bin() const;
 
             void write(const char* data, int len);
-            void read(char* data, int len);
 
             // Overloaded write functions
             void write(bool value);
@@ -47,6 +46,9 @@ namespace foo{
             void write(double value);
             void write(const char* value);
             void write(const std::string& value);
+
+            // Read functions
+            bool read(bool& value);
 
             // << operator overloading
             DataStream& operator<<(bool value){
@@ -84,6 +86,7 @@ namespace foo{
 
             private:
             std::vector<char> buf;
+            int pos = 0;
             void reserve(int len);
         };
 
@@ -212,6 +215,15 @@ namespace foo{
             int len = value.length();
             write(len);
             write(value.c_str(), len);
+        }
+
+        bool DataStream::read(bool& value){
+            if (buf[pos] != DataType::DT_BOOL){
+                throw std::logic_error("Error: attempt to read bool a type other than bool");
+            }
+            value = *(bool*)&buf[pos + 1];
+            pos += 2;
+            return value;
         }
     }
 }
