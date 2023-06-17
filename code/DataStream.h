@@ -48,7 +48,14 @@ namespace foo{
             void write(const std::string& value);
 
             // Read functions
-            bool read(bool& value);
+            void read(bool& value);
+            void read(char& value);
+            void read(__int32& value);
+            void read(__int64& value);
+            void read(float& value);
+            void read(double& value);
+            void read(std::string& value);
+
 
             // << operator overloading
             DataStream& operator<<(bool value){
@@ -217,13 +224,68 @@ namespace foo{
             write(value.c_str(), len);
         }
 
-        bool DataStream::read(bool& value){
+        void DataStream::read(bool& value){
             if (buf[pos] != DataType::DT_BOOL){
                 throw std::logic_error("Error: attempt to read bool a type other than bool");
             }
             value = *(bool*)&buf[pos + 1];
             pos += 2;
-            return value;
         }
+
+        void DataStream::read(char& value){
+            if (buf[pos] != DataType::DT_CHAR){
+                throw std::logic_error("Error: attempt to read char a type other than char");
+            }
+            value = *(char*)&buf[pos + 1];
+            pos += 2;
+        }
+
+        void DataStream::read(__int32& value){
+            if (buf[pos] != DataType::DT_INT32){
+                throw std::logic_error("Error: attempt to read int32 a type other than int32");
+            }
+            value = *(int*)&buf[pos + 1];
+            pos += 5;
+        }
+
+        void DataStream::read(__int64& value){
+            if (buf[pos] != DataType::DT_INT64){
+                throw std::logic_error("Error: attempt to read int64 a type other than int64");
+            }
+            value = *(long long*)&buf[pos + 1];
+            pos += 9;
+        }
+
+        void DataStream::read(float& value){
+            if (buf[pos] != DataType::DT_FLOAT){
+                throw std::logic_error("Error: attempt to read float a type other than float");
+            }
+            value = *(float*)&buf[pos + 1];
+            pos += 5;
+        }
+
+        void DataStream::read(double& value){
+            if (buf[pos] != DataType::DT_DOUBLE){
+                throw std::logic_error("Error: attempt to read double a type other than double");
+            }
+            value = *(double*)&buf[pos + 1];
+            pos += 9;
+        }
+
+        void DataStream::read(std::string& value){
+            if (buf[pos] != DataType::DT_STRING){
+                throw std::logic_error("Error: attempt to read string a type other than string");
+            }
+            pos += 1;
+            int len;
+            read(len);
+            if (len < 0){
+                throw std::logic_error("Error: attempt to read string with negative length");
+            }
+            value.assign((char*)&buf[pos], len);
+            pos += len;
+        }
+
+
     }
 }

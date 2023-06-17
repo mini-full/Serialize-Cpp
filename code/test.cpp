@@ -6,9 +6,18 @@ using namespace foo::serialize;
 
 int main(){
     DataStream ds;
-    bool b = true;
-    ds << b;
-    bool c;
-    ds.read(c);
-    cout << c << endl;
+    __int64 i = 32;
+    ds << i;
+    ds << 23.23;
+    ds << "Hello World";
+    ds.print_from_bin();
+    __int64 o;
+    double d;
+    string s;
+    ds.read(o);
+    ds.read(d);
+    ds.read(s);
+    cout << o << endl;
+    cout << d << endl;
+    cout << s << endl;
 } 
