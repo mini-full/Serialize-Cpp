@@ -8,6 +8,7 @@
 #include <cstdarg>
 #include <set>
 #include <map>
+#include "base64.h"
 
 #include "tinyxml2.h"
 
@@ -67,6 +68,51 @@ namespace XML{
             reset();
             serialize(object, root);
             save(fileName);
+        }
+
+        template <typename T>
+        void serialize_xml_base64(const T& object, string fileName){
+            reset();
+            serialize(object, root);
+            tinyxml2::XMLPrinter printer;
+            doc.Accept(&printer);
+            std::string str = printer.CStr();
+            std::string base64_str = base64_encode(str.c_str(), str.length());
+            std::ofstream ofs(fileName, std::ios::binary);
+            if (!ofs.is_open()){
+                std::cout << "open file " << fileName << " failed" << std::endl;
+                return;
+            }
+            ofs << base64_str;
+            ofs.close();
+        }
+
+        template <typename T>
+        void deserialize_xml_base64(T& object, string fileName){
+            std::ifstream fin(fileName, std::ios::binary);
+            if (!fin.is_open()){
+                std::cout << "open file " << fileName << " failed" << std::endl;
+                return;
+            }
+            std::string str;
+            fin >> str;
+            fin.close();
+            std::string base64_str = base64_decode(str);
+
+
+            XMLError ret = doc.Parse(base64_str.c_str());
+            if (ret != 0){
+                throw std::runtime_error("fail to parse the xml file");
+            }
+            root = doc.FirstChildElement("serialization");
+            if (root == nullptr){
+                throw std::runtime_error("can't find the root element");
+            }
+            XMLElement* element = root->FirstChildElement();
+            if (element == nullptr){
+                throw std::runtime_error("can't find the expected type in file");
+            }
+            bool valid = deserialize(object, element);
         }
 
         bool deserialize_xml(bool& object, string fileName){
