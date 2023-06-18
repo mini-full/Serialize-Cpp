@@ -1,12 +1,23 @@
 #include "xml.h"
 #include "base64.h"
 
-class Foo{
+class Foo{ // test for user-defined class
     public:
     int num;
     string name;
     vector<double> vec;
 };
+
+
+void test_base64(){
+    std::vector<std::pair<int, std::string>> a = {{1, "So hard"}, {2, "this homework"}}, b;
+    XML::xmlSerialBase base;
+    base.serialize_xml_base64(a, "./file/test.base64");
+    base.deserialize_xml_base64(b, "./file/test.base64");
+    if (a==b){
+        cout << "[pass]" << endl;
+    }
+}
 
 void test_xml_string(){
     cout << "test for xml string " << endl;
@@ -234,28 +245,19 @@ void test_xml_userType(){
     baseUsrType.custom_serialize_xml("./file/usr.xml", u1.num, u1.name, u1.vec);
 }
 
-void test_base64(){
-    std::vector<std::pair<int, std::string>> a = {{1, "hello"}, {2, "world"}}, b;
-    XML::xmlSerialBase base;
-    base.serialize_xml_base64(a, "./file/encode.base64");
-    base.deserialize_xml_base64(b, "./file/encode.base64");
-    if (a==b){
-        cout << "[pass]" << endl;
-    }
-}
 
 int main(){
-    // test_xml_string();
-    // test_xml_string();
-    // test_xml_vector_int();
-    // test_xml_vector_double();
-    // test_xml_vector_string();
-    // test_xml_list_int();
-    // test_xml_list_string();
-    // test_xml_pair_int_double();
-    // test_xml_set_string();
-    // test_xml_map_int2double();
-    // test_xml_map_str2str();
-    // test_xml_userType();
+    test_xml_string();
+    test_xml_string();
+    test_xml_vector_int();
+    test_xml_vector_double();
+    test_xml_vector_string();
+    test_xml_list_int();
+    test_xml_list_string();
+    test_xml_pair_int_double();
+    test_xml_set_string();
+    test_xml_map_int2double();
+    test_xml_map_str2str();
+    test_xml_userType();
     test_base64();
 }

@@ -170,3 +170,7 @@ Below is one of the file:
 ```
 
 It even does not need the user to define functions to serialize his/her class.
+
+## Bonus: Base64 Encoding and Decoding of XML
+
+I completed a wrapper of base64 encoding in `xml.h`, and it is tested in `test_xml.cpp`. A file named `test.base64` will be created.
